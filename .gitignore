@@ -1,0 +1,47 @@
+# Secrets / credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+
+# OS / shell files
+.bash_history
+.bashrc
+.bash_logout
+.profile
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Ansible
+*.retry
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+
+# Docker
+.docker/
+
+# Temporary files
+*.tmp
+*.swp

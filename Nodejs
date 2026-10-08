@@ -1,0 +1,16 @@
+cat > application/backend/package.json <<'EOF'
+{
+  "name": "demo-ecommerce-backend",
+  "version": "1.0.0",
+  "description": "Demo e-commerce backend for DevOps internship",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
+  }
+}
+EOF
+
