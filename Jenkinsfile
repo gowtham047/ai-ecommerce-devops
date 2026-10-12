@@ -3,12 +3,6 @@ pipeline {
 
     options {
         timestamps()
-        skipDefaultCheckout(true)
-    }
-
-    environment {
-        FRONTEND_IMAGE = "ai-ecommerce-frontend"
-        BACKEND_IMAGE  = "ai-ecommerce-backend"
     }
 
     stages {
@@ -21,60 +15,41 @@ pipeline {
 
         stage('Validate Docker Compose') {
             steps {
-                sh '''
-                    set -eu
-                    docker compose -f application/docker-compose.yml config -q
-                    echo "Docker Compose configuration is valid."
-                '''
+                bat 'docker compose config --quiet'
             }
         }
 
         stage('Backend Health Test') {
             steps {
-                sh '''
-                    set -eu
-                    curl --fail --silent --show-error \
-                      http://localhost:5000/health
-                    echo
-                    echo "Backend health test passed."
+                bat '''
+                    powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $r=Invoke-RestMethod -Uri 'http://localhost:5000/health' -TimeoutSec 10; $r | ConvertTo-Json -Compress; if ($r.status -ne 'UP') { exit 1 }"
                 '''
             }
         }
 
         stage('Build Frontend Image') {
             steps {
-                sh '''
-                    set -eu
-                    docker build \
-                      -t ${FRONTEND_IMAGE}:${BUILD_NUMBER} \
-                      -t ${FRONTEND_IMAGE}:latest \
-                      application/frontend
-                '''
+                bat 'docker build -t application-frontend:latest -f application/frontend/Dockerfile application/frontend'
             }
         }
 
         stage('Build Backend Image') {
             steps {
-                sh '''
-                    set -eu
-                    docker build \
-                      -t ${BACKEND_IMAGE}:${BUILD_NUMBER} \
-                      -t ${BACKEND_IMAGE}:latest \
-                      application/backend
-                '''
+                bat 'docker build -t application-backend:latest -f application/backend/Dockerfile application/backend'
             }
         }
     }
 
     post {
         success {
-            echo 'SUCCESS: E-commerce CI pipeline completed.'
+            echo 'SUCCESS: All pipeline stages completed.'
         }
         failure {
-            echo 'FAILED: Check the stage logs to identify the problem.'
+            echo 'FAILED: Check the first failed stage in Console Output.'
         }
         always {
             echo 'Pipeline execution finished.'
         }
     }
 }
+      
