@@ -62,6 +62,7 @@ pipeline {
             echo 'FAILED: Check the stage logs to identify the problem.'
         }
         always {
+            archiveArtifacts artifacts: 'security/reports/**', allowEmptyArchive: true
             echo 'Pipeline execution finished.'
         }
     }
